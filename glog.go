@@ -12,8 +12,8 @@ import (
 var (
 	exception = color.New(color.FgRed).Add(color.Bold).FprintfFunc()
 	success   = color.New(color.FgGreen).Add(color.Bold).FprintfFunc()
-	info      = color.New(color.FgMagenta).Add(color.Bold).FprintfFunc()
-	warn      = color.New(color.FgYellow).Add(color.Bold).FprintfFunc()
+	info      = color.New(color.FgBlue).Add(color.Bold).FprintfFunc()
+	warn      = color.New(color.FgHiYellow).Add(color.Bold).FprintfFunc()
 	normal    = color.New(color.FgWhite).Add(color.Bold).FprintfFunc()
 
 	mutex sync.Mutex
@@ -39,9 +39,9 @@ func New(arguments Arguments) *Logger {
 	}
 
 	if arguments.ShowYMD {
-		logger.timeFormat = "2006-01-02 15:04:05.000 (T)"
+		logger.timeFormat = "2006-01-02 15:04:05.000"
 	} else {
-		logger.timeFormat = "15:04:05.000 (T)"
+		logger.timeFormat = "15:04:05.000"
 	}
 
 	return logger
@@ -72,8 +72,4 @@ func (l *Logger) Info(format string, args ...interface{}) {
 
 func (l *Logger) Warn(format string, args ...interface{}) {
 	l.log(warn, "WARN", format, args...)
-}
-
-func (l *Logger) Log(format string, args ...interface{}) {
-	l.log(normal, "LOG", format, args)
 }
