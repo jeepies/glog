@@ -25,20 +25,20 @@ type Logger struct {
 }
 
 type Arguments struct {
-	prefix  string
-	showYMD bool
+	Prefix  string
+	ShowYMD bool
 }
 
 func New(arguments Arguments) *Logger {
 	logger := &Logger{}
 
-	if arguments.prefix != "" {
-		logger.prefix = "[" + arguments.prefix + "] "
+	if arguments.Prefix != "" {
+		logger.prefix = "[" + arguments.Prefix + "] "
 	} else {
 		logger.prefix = ""
 	}
 
-	if arguments.showYMD {
+	if arguments.ShowYMD {
 		logger.timeFormat = "2006-01-02 15:04:05.000 (T)"
 	} else {
 		logger.timeFormat = "15:04:05.000 (T)"
