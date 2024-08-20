@@ -14,7 +14,6 @@ var (
 	success   = color.New(color.FgGreen).Add(color.Bold).FprintfFunc()
 	info      = color.New(color.FgBlue).Add(color.Bold).FprintfFunc()
 	warn      = color.New(color.FgHiYellow).Add(color.Bold).FprintfFunc()
-	normal    = color.New(color.FgWhite).Add(color.Bold).FprintfFunc()
 
 	mutex sync.Mutex
 )
@@ -25,8 +24,8 @@ type Logger struct {
 }
 
 type Arguments struct {
-	Prefix  string
-	ShowYMD bool
+	Prefix          string
+	ShowYMD, ShowMs bool
 }
 
 func New(arguments Arguments) *Logger {
@@ -39,16 +38,20 @@ func New(arguments Arguments) *Logger {
 	}
 
 	if arguments.ShowYMD {
-		logger.timeFormat = "2006-01-02 15:04:05.000"
+		logger.timeFormat = "2006-01-02 15:04:05"
 	} else {
-		logger.timeFormat = "15:04:05.000"
+		logger.timeFormat = "15:04:05"
+	}
+
+	if arguments.ShowMs {
+		logger.timeFormat = logger.timeFormat + ".000"
 	}
 
 	return logger
 }
 
 func (l *Logger) log(_log func(w io.Writer, format string, args ...interface{}), status string, format string, args ...interface{}) {
-	// Lock mutex to prevent logs interfering with eachother
+	// Lock mutex to prevent logs interfering with each other
 	mutex.Lock()
 	defer mutex.Unlock()
 
@@ -62,8 +65,8 @@ func (l *Logger) Exception(format string, args ...interface{}) {
 }
 
 func (l *Logger) Success(format string, args ...interface{}) {
-	// Heh, succ（＞_＜）
-	l.log(success, "SUCC", format, args...)
+	// No more SUCC（＞_＜）
+	l.log(success, "INFO", format, args...)
 }
 
 func (l *Logger) Info(format string, args ...interface{}) {
