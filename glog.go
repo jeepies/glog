@@ -16,38 +16,64 @@ var (
 	warn      = color.New(color.FgYellow).Add(color.Bold).FprintfFunc()
 	normal    = color.New(color.FgWhite).Add(color.Bold).FprintfFunc()
 
-	timeFormat = "2006-01-02 15:04:05.000 (T)"
-
 	mutex sync.Mutex
 )
 
-func log(_log func(w io.Writer, format string, args ...interface{}), status string, format string, args ...interface{}) {
+type Logger struct {
+	prefix     string
+	timeFormat string
+}
+
+type Arguments struct {
+	prefix  string
+	showYMD bool
+}
+
+func New(arguments Arguments) *Logger {
+	logger := &Logger{}
+
+	if arguments.prefix != "" {
+		logger.prefix = "[" + arguments.prefix + "] "
+	} else {
+		logger.prefix = ""
+	}
+
+	if arguments.showYMD {
+		logger.timeFormat = "2006-01-02 15:04:05.000 (T)"
+	} else {
+		logger.timeFormat = "15:04:05.000 (T)"
+	}
+
+	return logger
+}
+
+func (l *Logger) log(_log func(w io.Writer, format string, args ...interface{}), status string, format string, args ...interface{}) {
 	// Lock mutex to prevent logs interfering with eachother
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	_log(os.Stdout, "[%s] [%s] ", time.Now().Format(timeFormat), status)
+	_log(os.Stdout, "%s[%s] [%s] ", l.prefix, time.Now().Format(l.timeFormat), status)
 	_log(os.Stdout, format, args...)
 	_log(os.Stdout, "\n")
 }
 
-func Exception(format string, args ...interface{}) {
-	log(exception, "ERR", format, args...)
+func (l *Logger) Exception(format string, args ...interface{}) {
+	l.log(exception, "ERR", format, args...)
 }
 
-func Success(format string, args ...interface{}) {
+func (l *Logger) Success(format string, args ...interface{}) {
 	// Heh, succ（＞_＜）
-	log(success, "SUCC", format, args...)
+	l.log(success, "SUCC", format, args...)
 }
 
-func Info(format string, args ...interface{}) {
-	log(info, "INFO", format, args...)
+func (l *Logger) Info(format string, args ...interface{}) {
+	l.log(info, "INFO", format, args...)
 }
 
-func Warn(format string, args ...interface{}) {
-	log(warn, "WARN", format, args...)
+func (l *Logger) Warn(format string, args ...interface{}) {
+	l.log(warn, "WARN", format, args...)
 }
 
-func Log(format string, args ...interface{}) {
-	log(normal, "LOG", format, args)
+func (l *Logger) Log(format string, args ...interface{}) {
+	l.log(normal, "LOG", format, args)
 }
