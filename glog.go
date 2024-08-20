@@ -16,7 +16,7 @@ var (
 	warn      = color.New(color.FgYellow).Add(color.Bold).FprintfFunc()
 	normal    = color.New(color.FgWhite).Add(color.Bold).FprintfFunc()
 
-	timeFormat = "2006-01-02T15:04:05.000"
+	timeFormat = "2006-01-02 15:04:05.000 (T)"
 
 	mutex sync.Mutex
 )
